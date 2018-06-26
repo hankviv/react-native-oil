@@ -37,7 +37,7 @@ export default class HomePage extends Component {
                         title="油耗"
                         renderIcon={() => <Image style={styles.image} source={require('../../res/images/oilTab.png')}/>}
                         onPress={() => this.setState({selectedTab: 'oilCost'})}>
-                        <OilCostPage/>
+                        <OilCostPage navigation = {this.props.navigation}/>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'otherCost'}

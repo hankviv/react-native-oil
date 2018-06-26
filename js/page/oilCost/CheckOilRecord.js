@@ -9,10 +9,13 @@ import {
 
 export default class CheckOilRecord extends Component{
 
-    render(){
-        return(
+    render() {
+        return (
             <View style={styles.container}>
                 <Text>AddRecord</Text>
+                <Text style={styles.text} onPress={() =>
+                    this.props.navigation.goBack()
+                }>CheckOilRecord-----goBack</Text>
             </View>
         );
     }
@@ -23,5 +26,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    text:{
+        fontSize:20
     }
 })

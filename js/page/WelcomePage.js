@@ -45,8 +45,7 @@ export default class WelcomePage extends Component{
 const styles = StyleSheet.create({
     text:{
         flex:1,
-        marginTop:500,
-        marginLeft:140,
+        alignItems: 'center',
         justifyContent: 'center',
         fontSize:40,
         color:'red',

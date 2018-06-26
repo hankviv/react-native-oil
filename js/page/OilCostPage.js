@@ -9,16 +9,18 @@ import {
 export default class OilCostPage extends Component{
     constructor(props) {
         super(props);
-        alert(JSON.stringify(this.props));
+        //alert(JSON.stringify(this.props));
     }
 
     render(){
         return(
             <View style={styles.container}>
                 <Text style={styles.text} onPress={()=>
+                    this.props.navigation.navigate('CheckOilRecord')
+                }>CheckOilRecord</Text>
+                <Text style={styles.text} onPress={()=>
                     this.props.navigation.navigate('AddOilRecord')
-                }>check</Text>
-                <Text style={styles.text}>add</Text>
+                }>AddOilRecord</Text>
                 <Text style={styles.text}>OilCost</Text>
             </View>
         );
