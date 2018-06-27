@@ -6,16 +6,29 @@ import {
     Text,
     Button,
 } from 'react-native';
+import DatePicker from 'react-native-datepicker'
+import moment from 'moment';
+
 
 export default class CheckOilRecord extends Component{
+    constructor(props){
+        super(props);
+        let date = moment().format('YYYY-MM-DD HH:mm');
+        this.state = {date:date}
+    }
+
 
     render() {
         return (
             <View style={styles.container}>
-                <Text>AddRecord</Text>
+                <Text style={{fontSize:20,color:'red'}}>AddRecord</Text>
+
                 <Text style={styles.text} onPress={() =>
                     this.props.navigation.goBack()
-                }>CheckOilRecord-----goBack</Text>
+                }>save</Text>
+                <Text style={styles.text} onPress={() =>
+                    this.props.navigation.goBack()
+                }>goBack</Text>
             </View>
         );
     }
@@ -24,8 +37,6 @@ export default class CheckOilRecord extends Component{
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     text:{
         fontSize:20
