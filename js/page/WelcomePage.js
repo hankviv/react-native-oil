@@ -29,7 +29,7 @@ export default class WelcomePage extends Component{
         this.timer = setTimeout(()=>{
             //SplashScreen.hide();
             this.props.navigation.dispatch(resetAction);
-        },500);
+        },100);
     }
 
 
