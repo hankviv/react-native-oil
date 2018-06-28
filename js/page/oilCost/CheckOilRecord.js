@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
-
+import DataRepository from '../../data/DataRepository'
 
 export default class CheckOilRecord extends Component{
     constructor(props){

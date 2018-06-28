@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
+import DataRepository from '../../data/DataRepository'
 
 export default class AddOilRecord extends Component{
     constructor(props) {
@@ -41,14 +42,8 @@ export default class AddOilRecord extends Component{
 
 
                     <Text style={styles.text}
-                          onPress={()=>{
-                              if(!this.state.mileage){
-
-                              }
-
-                              this.props.navigation.goBack();
-                          }
-                          }>save
+                          onPress={()=>this._saveItem()}
+                    >save
                     </Text>
 
 
@@ -182,6 +177,36 @@ export default class AddOilRecord extends Component{
 
         );
     }
+
+
+    _saveItem(){
+        let key = 'oilRecord';
+
+        // let record = DataRepository.getDate(key);
+        // if(!record){
+        //     let record = [];
+        // };
+
+        let item = {
+            lastOil:this.state.lastOil,
+            fullOil:true,
+            mileage:this.state.mileage,
+            oilMoney:this.state.oilMoney,
+            oilPrice:this.state.oilPrice,
+            oilNum:this.state.oilNum,
+            date:this.state.date,
+        };
+        //record.push(item);
+
+        let handle = new DataRepository();
+        handle.saveData(key,JSON.stringify(item));
+        let res = handle.getData(key,(value)=>{
+            alert(value);
+        });
+
+        this.props.navigation.goBack();
+    }
+
 }
 
 const styles = StyleSheet.create({
