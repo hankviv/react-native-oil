@@ -13,7 +13,13 @@ import DataRepository from '../../data/DataRepository'
 export default class CheckOilRecord extends Component{
     constructor(props){
         super(props);
+        let Handle = new DataRepository();
+
         let date = moment().format('YYYY-MM-DD HH:mm');
+        let localData = Handle.getData('oilRecord',(value)=>{
+            alert(value);
+        })
+
         this.state = {date:date}
     }
 
@@ -28,7 +34,7 @@ export default class CheckOilRecord extends Component{
                 }>save</Text>
                 <Text style={styles.text} onPress={() =>
                     this.props.navigation.goBack()
-                }>goBack</Text>
+                }></Text>
             </View>
         );
     }

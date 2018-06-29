@@ -34,6 +34,8 @@ export default class DataRepository extends Component{
         AsyncStorage.getItem(key,(error,result)=>{
             if(!error){
                 callback(result);
+            }else{
+                callback([]);
             }
         })
     }

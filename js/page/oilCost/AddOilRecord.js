@@ -181,30 +181,31 @@ export default class AddOilRecord extends Component{
 
     _saveItem(){
         let key = 'oilRecord';
-
-        // let record = DataRepository.getDate(key);
-        // if(!record){
-        //     let record = [];
-        // };
-
-        let item = {
-            lastOil:this.state.lastOil,
-            fullOil:true,
-            mileage:this.state.mileage,
-            oilMoney:this.state.oilMoney,
-            oilPrice:this.state.oilPrice,
-            oilNum:this.state.oilNum,
-            date:this.state.date,
-        };
-        //record.push(item);
-
         let handle = new DataRepository();
-        handle.saveData(key,JSON.stringify(item));
-        let res = handle.getData(key,(value)=>{
-            alert(value);
-        });
+        //handle.deleteData(key);
+        handle.getData(key,(value)=>{
+            if(!value || typeof(value) == 'undefined' ){
+                this.setState({localData : [] });
+            }else {
+                this.setState({localData : JSON.parse(value)});
+            }
 
-        this.props.navigation.goBack();
+            let item = {
+                lastOil:this.state.lastOil,
+                fullOil:true,
+                mileage:this.state.mileage,
+                oilMoney:this.state.oilMoney,
+                oilPrice:this.state.oilPrice,
+                oilNum:this.state.oilNum,
+                date:this.state.date,
+            };
+            localData = this.state.localData;
+            localData.push(item);
+
+            handle.saveData(key,JSON.stringify(localData));
+
+            this.props.navigation.goBack();
+        });
     }
 
 }
