@@ -6,10 +6,12 @@ import {
     Text,
     Button,
     ListView,
+    TouchableOpacity,
+    Image,
 } from 'react-native';
-import DatePicker from 'react-native-datepicker'
-import moment from 'moment';
+
 import DataRepository from '../../data/DataRepository'
+import NavigationBar from '../../common/NavigationBar'
 
 export default class CheckOilRecord extends Component{
     constructor(props){
@@ -23,6 +25,18 @@ export default class CheckOilRecord extends Component{
         this._loadData();
     }
 
+    renderButton(image){
+        return <TouchableOpacity
+            style={{padding: 8}}
+            onPress={()=>{
+                this.props.navigation.pop();
+            }}>
+            <Image
+                style={{width: 26, height: 26,tintColor:'yellow'}}
+                source={image}/>
+        </TouchableOpacity>;
+    }
+
     _loadData()
     {
         Handle.getData('oilRecord',(result)=>{
@@ -32,10 +46,17 @@ export default class CheckOilRecord extends Component{
             }
         })
     }
-    
+
     render() {
         return (
             <View style={styles.container}>
+                <NavigationBar
+                    title = 'check'
+                    style={{backgroundColor:'#F08080'}}
+                    leftButton={this.renderButton(require('../../../res/images/ic_arrow_back_white_36pt.png'))}
+                    rightButton={this.renderButton(require('../../../res/images/ic_code.png'))}
+                />
+
                 <Text style={{fontSize:20,color:'red'}}>AddRecord</Text>
                 <Text style={styles.text} onPress={() =>
                     this.props.navigation.goBack()
