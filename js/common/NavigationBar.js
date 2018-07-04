@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 20,
-        color: '#FFFFFF',
+        color: '#000000',
     },
     navBarButton: {
         alignItems: 'center',
