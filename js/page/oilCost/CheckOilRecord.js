@@ -25,14 +25,14 @@ export default class CheckOilRecord extends Component{
         this._loadData();
     }
 
-    renderButton(image){
+    renderLeftButton(image){
         return <TouchableOpacity
             style={{padding: 8}}
             onPress={()=>{
                 this.props.navigation.pop();
             }}>
             <Image
-                style={{width: 26, height: 26,tintColor:'yellow'}}
+                style={{width: 28, height: 28}}
                 source={image}/>
         </TouchableOpacity>;
     }
@@ -41,34 +41,41 @@ export default class CheckOilRecord extends Component{
     {
         Handle.getData('oilRecord',(result)=>{
             if(result){
-                //alert(result);
                 this.setState({dataSource: ds.cloneWithRows(JSON.parse(result)),'dataShow':true});
             }
         })
     }
 
-    render() {
+
+    _showData(rowData){
         return (
             <View style={styles.container}>
-                <NavigationBar
-                    title = 'check'
-                    style={{backgroundColor:'#F08080'}}
-                    leftButton={this.renderButton(require('../../../res/images/ic_arrow_back_white_36pt.png'))}
-                    rightButton={this.renderButton(require('../../../res/images/ic_code.png'))}
-                />
 
-                <Text style={{fontSize:20,color:'red'}}>AddRecord</Text>
-                <Text style={styles.text} onPress={() =>
-                    this.props.navigation.goBack()
-                }>save</Text>
-                <Text style={styles.text} onPress={() =>
-                    this.props.navigation.goBack()
-                }>goback</Text>
+                <Text>{rowData.lastOil}</Text>
+                <Text>{rowData.fullOil}</Text>
+                <Text>{rowData.mileage}</Text>
+                <Text>{rowData.oilMoney}</Text>
+                <Text>{rowData.oilPrice}</Text>
+                <Text>{rowData.oilNum}</Text>
+                <Text>{rowData.date}</Text>
+            </View>
+        )
+    }
+
+
+    render() {
+        return (
+            <View>
+                <NavigationBar
+                    title = '油耗记录'
+                    style={styles.NavigationBar}
+                    leftButton={this.renderLeftButton(require('../../../res/images/ic_back_shape.png'))}
+                />
                 {
                    this.state.dataShow ?
                        <ListView
                            dataSource={this.state.dataSource}
-                           renderRow={(rowData) => <Text>{JSON.stringify(rowData)}</Text>}
+                           renderRow={(rowData) => this._showData(rowData)}
                         />
                         : <Text>loading</Text>
                 }
@@ -82,8 +89,21 @@ export default class CheckOilRecord extends Component{
 const styles = StyleSheet.create({
     container:{
         flex: 1,
+        paddingLeft:7,
+        backgroundColor:"#FFFFFF"
+    },
+    NavigationBar:{
+        backgroundColor:'#FFFFFF',
+        borderColor:'#E5E5E5',
+        borderBottomWidth:1
+    },
+    item:{
+        marginTop:12,
+        paddingBottom:6,
+        borderColor:'#E5E5E5',
+        borderBottomWidth:1,
     },
     text:{
-        fontSize:20
+        fontSize:12
     }
-})
+});

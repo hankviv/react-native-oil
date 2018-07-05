@@ -102,102 +102,104 @@ export default class AddOilRecord extends Component{
             </Picker>
 
         return(
-            <ScrollView>
+            <View style={{backgroundColor:'#FFFFFF'}}>
                 <NavigationBar
                     title = '加油'
                     style={styles.NavigationBar}
                     leftButton={this.renderLeftButton(require('../../../res/images/ic_back.png'))}
                     rightButton={this.renderRightButton(require('../../../res/images/ic_save.png'))}
                 />
+                <ScrollView>
+                    <View style={styles.container}>
 
-                <View style={styles.container}>
+                        {dataPick}
 
-                    {dataPick}
-
-                    <View style={styles.item}>
-                        <Text style={styles.text}>最新里程(公里)</Text>
-                        <TextInput
-                            keyboardType = 'numeric'
-                            maxLength={7}
-                            underlineColorAndroid = 'transparent'
-                            style={styles.textInput}
-                            onChangeText = {(value) => this.setState({mileage:value})}
-                            value={String(this.state.mileage)}
-                        />
-                    </View>
-
-                    <View style={styles.changeMoney}>
-
-                        <View style={styles.changeMoneyItem}>
-                            <View>
-                                <Text style={styles.text}>加油金额(元)</Text>
-                                <TextInput
-                                    keyboardType = 'numeric'
-                                    maxLength={7}
-                                    style={styles.textInput}
-                                    onChangeText = {(value)=>this._changeOilMoney(value)}
-                                    value={String(this.state.oilMoney)}
-                                />
-                            </View>
+                        <View style={styles.item}>
+                            <Text style={styles.text}>最新里程(公里)</Text>
+                            <TextInput
+                                keyboardType = 'numeric'
+                                maxLength={7}
+                                underlineColorAndroid = 'transparent'
+                                style={styles.textInput}
+                                onChangeText = {(value) => this.setState({mileage:value})}
+                                value={String(this.state.mileage)}
+                            />
                         </View>
 
-                        <View style={styles.changeMoneyItem}>
-                            <Text style={{fontSize:15}}>=</Text>
-                            <View>
-                                <Text style={styles.text}>单价(元/升)</Text>
-                                <TextInput
-                                    keyboardType = 'numeric'
-                                    maxLength={7}
-                                    style={styles.textInput}
-                                    onChangeText = {(value) =>this._changeOilPrice(value)}
-                                    value={String(this.state.oilPrice)}
-                                />
+                        <View style={styles.changeMoney}>
+
+                            <View style={styles.changeMoneyItem}>
+                                <View>
+                                    <Text style={styles.text}>加油金额(元)</Text>
+                                    <TextInput
+                                        keyboardType = 'numeric'
+                                        maxLength={7}
+                                        style={styles.textInput}
+                                        onChangeText = {(value)=>this._changeOilMoney(value)}
+                                        value={String(this.state.oilMoney)}
+                                    />
+                                </View>
                             </View>
+
+                            <View style={styles.changeMoneyItem}>
+                                <Text style={{fontSize:15}}>=</Text>
+                                <View>
+                                    <Text style={styles.text}>单价(元/升)</Text>
+                                    <TextInput
+                                        keyboardType = 'numeric'
+                                        maxLength={7}
+                                        style={styles.textInput}
+                                        onChangeText = {(value) =>this._changeOilPrice(value)}
+                                        value={String(this.state.oilPrice)}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={styles.changeMoneyItem}>
+                                <Text style={{fontSize:15}}>X</Text>
+                                <View>
+                                    <Text style={styles.text}>加油量(升)</Text>
+                                    <TextInput
+                                        keyboardType = 'numeric'
+                                        maxLength={7}
+                                        style={styles.textInput}
+                                        onChangeText = {(value) =>this._changeOilNum(value)}
+                                        value={String(this.state.oilNum)}
+                                    />
+                                </View>
+                            </View>
+
                         </View>
 
-                        <View style={styles.changeMoneyItem}>
-                            <Text style={{fontSize:15}}>X</Text>
-                            <View>
-                                <Text style={styles.text}>加油量(升)</Text>
-                                <TextInput
-                                    keyboardType = 'numeric'
-                                    maxLength={7}
-                                    style={styles.textInput}
-                                    onChangeText = {(value) =>this._changeOilNum(value)}
-                                    value={String(this.state.oilNum)}
-                                />
-                            </View>
+                        <View style={styles.item}>
+                            <TouchableHighlight
+                                underlayColor = '#E5E5E5'
+                                onPress={()=>{
+                                    let fullOil = !this.state.fullOil
+                                    this.setState({fullOil: fullOil})
+                                }}
+                            >
+                                <View>
+                                    <Text style={styles.text}>是否加满</Text>
+                                    <Text style={{fontSize:19,color:'#000000'}}>{this.state.fullOil ? '已加满' : '未加满'}</Text>
+                                </View>
+                            </TouchableHighlight>
+                        </View>
+
+                        <View style={styles.item}>
+                            <Text style={styles.text}>剩余油量</Text>
+                            {picker}
+                        </View>
+
+                        <View style={styles.item}>
+                            <Text style={styles.text}>油箱剩余百分比(%)</Text>
+                            <Text style={{fontSize:21,color:'#000000'}}>{this.state.lastOil}</Text>
                         </View>
 
                     </View>
+                </ScrollView>
+            </View>
 
-                    <View style={styles.item}>
-                        <TouchableHighlight
-                            underlayColor = '#E5E5E5'
-                            onPress={()=>{
-                                let fullOil = !this.state.fullOil
-                                this.setState({fullOil: fullOil})
-                            }}
-                        >
-                            <View>
-                                <Text style={styles.text}>是否加满</Text>
-                                <Text style={{fontSize:21,color:'#000000'}}>{this.state.fullOil ? '已加满' : '未加满'}</Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-
-                    <View style={styles.item}>
-                        <Text style={styles.text}>剩余油量</Text>
-                        {picker}
-                    </View>
-
-                    <View style={styles.item}>
-                        <Text style={styles.text}>油箱剩余百分比(%)</Text>
-                        <Text style={{fontSize:21,color:'#000000'}}>{this.state.lastOil}</Text>
-                    </View>
-
-                </View>
-            </ScrollView>
         );
     }
 
