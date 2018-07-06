@@ -24,42 +24,35 @@ export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'oilCost',
+            selectedTab: '油耗',
         }
+    }
+
+
+    _renderTabBarItems(selectedTab,icon,selectedIcon,Component){
+        return (
+            <TabNavigator.Item
+                selected={this.state.selectedTab === selectedTab}
+                title={selectedTab}
+                titleStyle={styles.tabText}
+                selectedTitleStyle={styles.selectedTabText}
+                renderIcon={() => <Image style={styles.icon} source={icon} />}
+                renderSelectedIcon={() => <Image style={styles.icon} source={selectedIcon} />}
+                onPress={() => this.setState({ selectedTab: selectedTab })}
+            >
+                <Component navigation = {this.props.navigation} />
+            </TabNavigator.Item>
+        )
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <TabNavigator>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'oilCost'}
-                        title="油耗"
-                        renderIcon={() => <Image style={styles.image} source={require('../../res/images/oilTab.png')}/>}
-                        onPress={() => this.setState({selectedTab: 'oilCost'})}>
-                        <OilCostPage navigation = {this.props.navigation}/>
-                    </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'otherCost'}
-                        title="花费"
-                        renderIcon={() => <Image style={styles.image} source={require('../../res/images/oilTab.png')}/>}
-                        onPress={() => this.setState({selectedTab: 'otherCost'})}>
-                        <OtherCostPage/>
-                    </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'find'}
-                        title="发现"
-                        renderIcon={() => <Image style={styles.image} source={require('../../res/images/oilTab.png')}/>}
-                        onPress={() => this.setState({selectedTab: 'find'})}>
-                        <FindPage/>
-                    </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'my'}
-                        title="我的"
-                        renderIcon={() => <Image style={styles.image} source={require('../../res/images/oilTab.png')}/>}
-                        onPress={() => this.setState({selectedTab: 'my'})}>
-                        <MyPage/>
-                    </TabNavigator.Item>
+                    {this._renderTabBarItems('油耗',require('../../res/images/ic_oil.png'),require('../../res/images/ic_oil_select.png'),OilCostPage)}
+                    {this._renderTabBarItems('花费',require('../../res/images/ic_my.png'),require('../../res/images/ic_my_select.png'),OtherCostPage)}
+                    {this._renderTabBarItems('发现',require('../../res/images/ic_my.png'),require('../../res/images/ic_my_select.png'),FindPage)}
+                    {this._renderTabBarItems('我的',require('../../res/images/ic_my.png'),require('../../res/images/ic_my_select.png'),MyPage)}
                 </TabNavigator>
             </View>
         );
@@ -70,8 +63,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    image:{
+    icon:{
         height: 20,
         width:20,
+    },
+    tabText:{
+        fontSize:10
+    },
+    selectedTabText:{
+        color:'#DF9C89'
     },
 });
