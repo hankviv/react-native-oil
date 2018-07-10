@@ -8,6 +8,7 @@ import {
     ListView,
     TouchableOpacity,
     Image,
+    ScrollView,
 } from 'react-native';
 
 import DataRepository from '../../data/DataRepository'
@@ -118,11 +119,13 @@ export default class CheckOilRecord extends Component{
                 />
                 {
                    this.state.dataShow ?
-                       <ListView
-                           dataSource={this.state.dataSource}
-                           renderRow={(rowData) => this._showData(rowData)}
-                        />
-                        : <Text>loading</Text>
+                       <ScrollView>
+                           <ListView
+                               dataSource={this.state.dataSource}
+                               renderRow={(rowData) => this._showData(rowData)}
+                           />
+                       </ScrollView>
+                        : <Text style={{color:'#E9C6A9',alignSelf:'center',marginTop:80}}>加载中...</Text>
                 }
 
             </View>
