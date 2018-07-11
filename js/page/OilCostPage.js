@@ -8,6 +8,7 @@ import {
     Image,
     ScrollView,
     ImageBackground,
+    Platform
 } from 'react-native';
 import NavigationBar from '../common/NavigationBar';
 import Echarts from 'native-echarts';
@@ -55,20 +56,22 @@ export default class OilCostPage extends Component{
 
     render(){
         const option = {
+            title: {
+            },
+            tooltip: {},
+            legend: {
+            },
             xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子","高跟鞋4","袜3子","高跟2鞋","袜1子"]
             },
-            yAxis: {
-                type: 'value'
-            },
+            yAxis: {},
             series: [{
-                data: [820, 932, 901, 934, 1290, 1330, 1320],
-                type: 'line',
-                areaStyle: {}
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20, 10, 20, 10, 20]
             }]
         };
+
         return(
             <View style={{backgroundColor:'#FFFFFF'}}>
                 <NavigationBar
@@ -105,7 +108,12 @@ export default class OilCostPage extends Component{
 
 
                         </View>
-                        <Echarts option={option} height={300} style={{alignSelf:'center'}} />
+
+                        <View style={{paddingLeft:10,paddingRight:15}}>
+                            <Echarts option={option} height={350} width={380}  />
+                        </View>
+
+                        <View style={{height:Platform.OS == 'ios' ? 0:80}}></View>
 
                     </ScrollView>
 
