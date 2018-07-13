@@ -4,26 +4,39 @@ import {
     StyleSheet,
     View,
     Text,
-    Button,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    ImageBackground,
+    Platform
 } from 'react-native';
+import NavigationBar from '../common/NavigationBar';
 
-export default class FindPage extends Component{
+export default class FindPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
 
-    render(){
-        return(
-            <View style={styles.container}>
-                <Text>findPage</Text>
+    render() {
+        return (
+            <View style={{backgroundColor: '#FFFFFF'}}>
+                <NavigationBar
+                    title='发现'
+                    style={styles.NavigationBar}/>
             </View>
         );
     }
 
-
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-})
+        container:{
+            flex: 1,
+        },
+        NavigationBar:{
+            backgroundColor:'#FFFFFF',
+            borderColor:'#E5E5E5',
+            borderBottomWidth:1
+        },
+    })

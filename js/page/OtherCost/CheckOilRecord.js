@@ -9,7 +9,6 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
-    Platform,
 } from 'react-native';
 
 import DataRepository from '../../data/DataRepository'
@@ -112,7 +111,7 @@ export default class CheckOilRecord extends Component{
 
     render() {
         return (
-            <View style={{backgroundColor:'#FFFFFF'}}>
+            <View>
                 <NavigationBar
                     title = '油耗记录'
                     style={styles.NavigationBar}
@@ -121,13 +120,10 @@ export default class CheckOilRecord extends Component{
                 {
                    this.state.dataShow ?
                        <ScrollView>
-                           <View>
-                               <ListView
-                                   dataSource={this.state.dataSource}
-                                   renderRow={(rowData) => this._showData(rowData)}
-                               />
-                               <View style={{height:Platform.OS == 'ios' ? 0:100}}></View>
-                           </View>
+                           <ListView
+                               dataSource={this.state.dataSource}
+                               renderRow={(rowData) => this._showData(rowData)}
+                           />
                        </ScrollView>
                         : <Text style={{color:'#E9C6A9',alignSelf:'center',marginTop:80}}>加载中...</Text>
                 }

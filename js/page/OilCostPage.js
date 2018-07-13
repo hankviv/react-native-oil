@@ -16,7 +16,15 @@ import Echarts from 'native-echarts';
 export default class OilCostPage extends Component{
     constructor(props) {
         super(props);
+        this.state = {
+            echartXData:['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            echartYData:[820, 932, 901, 934, 1290, 1330, 1320],
+            text1Color:'#FFD700',
+            text2Color:'#000000',
+            text3Color:'#000000',
+        }
     }
+
 
     renderLeftButton(image){
         return <TouchableOpacity
@@ -54,23 +62,56 @@ export default class OilCostPage extends Component{
                 </View>;
     }
 
+    _clickData(type){
+
+        switch (type){
+            case 1:
+                this.setState({
+                    text1Color:'#FFD700',
+                    text2Color:'#000000',
+                    text3Color:'#000000',
+                });
+                break;
+            case 2:
+                this.setState({
+                    text1Color:'#000000',
+                    text2Color:'#FFD700',
+                    text3Color:'#000000',
+                });
+                break;
+            case 3:
+                this.setState({
+                    text1Color:'#000000',
+                    text2Color:'#000000',
+                    text3Color:'#FFD700',
+                });
+                break;
+        }
+
+
+        this.setState({
+            echartXData:['Mon', 'Tue', 'Wed'],
+            echartYData:[820, 932, 901]
+        })
+    }
+
     render(){
         const option = {
-            title: {
-            },
-            tooltip: {},
-            legend: {
-            },
             xAxis: {
-                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子","高跟鞋4","袜3子","高跟2鞋","袜1子"]
+                type: 'category',
+                boundaryGap: false,
+                data: this.state.echartXData
             },
-            yAxis: {},
+            yAxis: {
+                type: 'value'
+            },
             series: [{
-                name: '销量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20, 10, 20, 10, 20]
+                data: this.state.echartYData,
+                type: 'line',
+                areaStyle: {}
             }]
         };
+
 
         return(
             <View style={{backgroundColor:'#FFFFFF'}}>
@@ -83,6 +124,7 @@ export default class OilCostPage extends Component{
                 <View>
                     <ScrollView>
                         <View>
+
                             <ImageBackground style={styles.bannerImage}
                                    source={require('../../res/images/cost_back.png')}>
                                 <Text style={{fontSize:20,color:'#FFFFFF'}}>最新油耗</Text>
@@ -91,7 +133,6 @@ export default class OilCostPage extends Component{
                             </ImageBackground>
 
                             <View style={{marginBottom:20}}>
-
                                  <View style={styles.showItem}>
                                      {this.renderSingleItem('累计油耗','5.66','升/百公里')}
                                      {this.renderSingleItem('平均形式','1200','公里/天')}
@@ -103,17 +144,21 @@ export default class OilCostPage extends Component{
                                     {this.renderSingleItem('累计加油','5.66','升')}
                                     {this.renderSingleItem('平均油费','10000','元/月')}
                                 </View>
-
                             </View>
 
-
                         </View>
 
-                        <View style={{paddingLeft:10,paddingRight:15}}>
-                            <Echarts option={option} height={350} width={380}  />
+
+                        <View style={{flexDirection:'row', justifyContent:'space-around',marginTop:15,marginLeft:30,marginRight:30,paddingBottom:3,borderBottomWidth:1,borderColor:'#B0B0B0'}}>
+                            <Text style={{color:this.state.text1Color}} onPress={()=>this._clickData(1)}>半年</Text>
+                            <Text style={{color:this.state.text2Color}} onPress={()=>this._clickData(2)}>一年</Text>
+                            <Text style={{color:this.state.text3Color}} onPress={()=>this._clickData(3)}>全部</Text>
+                        </View>
+                        <View style={{paddingLeft:15,paddingRight:15}}>
+                            <Echarts option={option} height={300} width={360}  />
                         </View>
 
-                        <View style={{height:Platform.OS == 'ios' ? 0:80}}></View>
+                        <View style={{height:Platform.OS == 'ios' ? 0:100}}></View>
 
                     </ScrollView>
 
@@ -196,5 +241,5 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection:'row',
         alignItems:'center'
-    }
+    },
 })
