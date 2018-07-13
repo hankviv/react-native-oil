@@ -11,6 +11,8 @@ import {
     ScrollView,
     TouchableOpacity,
     Image,
+    Platform,
+    Alert,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
@@ -28,6 +30,7 @@ export default class AddOilRecord extends Component{
             oilPrice:'',
             oilNum:'',
             date:moment().format('YYYY-MM-DD HH:mm'),
+            showLastOil:'油灯已亮'
         }
     }
 
@@ -53,6 +56,39 @@ export default class AddOilRecord extends Component{
                 style={{width: 50, height: 50}}
                 source={image}/>
         </TouchableOpacity>;
+    }
+
+    _PickerShow(){
+        if(Platform.OS === 'ios'){
+            return  <Text onPress={()=>{
+                Alert.alert(
+                    '剩余油量',
+                    '',
+                    [
+                        {text: '油灯已亮', onPress: () =>{this.setState({'lastOil':'10','showLastOil':'油灯已亮'})}},
+                        {text: '一半', onPress: () =>{this.setState({'lastOil':'50','showLastOil':'一半'})}},
+                        {text: '1/4', onPress: () =>{this.setState({'lastOil':'25','showLastOil':'1/4'})}},
+                        {text: '1/8', onPress: () =>{this.setState({'lastOil':'12','showLastOil':'1/8'})}},
+                    ],
+                );
+            }}>
+                {this.state.showLastOil}
+            </Text>;
+        }else{
+            return  <Picker
+                mode = 'dialog'
+                selectedValue={this.state.lastOil}
+                onValueChange={(lastOil) => this.setState({lastOil: lastOil})}
+                style={{ height: 30, width: 150}}
+                itemStyle ={{borderColor:'#E5E5E5',borderWidth:1}}
+                prompt={'剩余油量'}
+            >
+                <Picker.Item label="油灯已亮" value="10" />
+                <Picker.Item label="一半" value="50" />
+                <Picker.Item label="1/4" value="25" />
+                <Picker.Item label="1/8" value="12" />
+            </Picker>;
+        }
     }
 
     render(){
@@ -85,21 +121,6 @@ export default class AddOilRecord extends Component{
                     onDateChange={(date) => {this.setState({date: date})}}
                 />
             </View>
-
-        let picker =
-            <Picker
-                mode = 'dialog'
-                selectedValue={this.state.lastOil}
-                onValueChange={(lastOil) => this.setState({lastOil: lastOil})}
-                style={{ height: 30, width: 150}}
-                itemStyle ={{borderColor:'#E5E5E5',borderWidth:1}}
-                prompt={'剩余油量'}
-            >
-                <Picker.Item label="油灯已亮" value="10" />
-                <Picker.Item label="一半" value="50" />
-                <Picker.Item label="1/4" value="25" />
-                <Picker.Item label="1/8" value="12" />
-            </Picker>
 
         return(
             <View style={{backgroundColor:'#FFFFFF'}}>
@@ -188,7 +209,7 @@ export default class AddOilRecord extends Component{
 
                         <View style={styles.item}>
                             <Text style={styles.text}>剩余油量</Text>
-                            {picker}
+                            {this._PickerShow()}
                         </View>
 
                         <View style={styles.item}>

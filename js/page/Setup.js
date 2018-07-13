@@ -6,7 +6,8 @@ import WelcomePage from './WelcomePage';
 import HomePage from './HomePage';
 import AddOilRecord from './oilCost/AddOilRecord';
 import CheckOilRecord from './oilCost/CheckOilRecord';
-
+import AddOtherRecord from './OtherCost/AddOtherRecord';
+import CheckOtherRecord from './OtherCost/CheckOtherRecord';
 
 const RootStack = createStackNavigator(
     {
@@ -32,6 +33,17 @@ const RootStack = createStackNavigator(
             screen: CheckOilRecord,
             navigationOptions: {
 
+            }
+        },
+        AddOtherRecord: {
+            screen: AddOtherRecord,
+            navigationOptions: {
+
+            }
+        },
+        CheckOtherRecord: {
+            screen: CheckOtherRecord,
+            navigationOptions: {
             }
         },
     },

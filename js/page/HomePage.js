@@ -24,7 +24,7 @@ export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: '油耗',
+            selectedTab: '花费',
         }
     }
 
@@ -50,8 +50,8 @@ export default class HomePage extends Component {
             <View style={styles.container}>
                 <TabNavigator>
                     {this._renderTabBarItems('油耗',require('../../res/images/ic_oil.png'),require('../../res/images/ic_oil_select.png'),OilCostPage)}
-                    {this._renderTabBarItems('花费',require('../../res/images/ic_my.png'),require('../../res/images/ic_my_select.png'),OtherCostPage)}
-                    {this._renderTabBarItems('发现',require('../../res/images/ic_my.png'),require('../../res/images/ic_my_select.png'),FindPage)}
+                    {this._renderTabBarItems('花费',require('../../res/images/ic_cost.png'),require('../../res/images/ic_cost_select.png'),OtherCostPage)}
+                    {this._renderTabBarItems('发现',require('../../res/images/ic_find.png'),require('../../res/images/ic_find_select.png'),FindPage)}
                     {this._renderTabBarItems('我的',require('../../res/images/ic_my.png'),require('../../res/images/ic_my_select.png'),MyPage)}
                 </TabNavigator>
             </View>

@@ -30,7 +30,7 @@ export default class OtherCostPage extends Component{
         return <TouchableOpacity
             style={{padding: 8}}
             onPress={()=>{
-                this.props.navigation.navigate('CheckOilRecord');
+                this.props.navigation.navigate('CheckOtherRecord');
             }}>
             <Image
                 style={{width: 28, height: 28}}
@@ -42,7 +42,7 @@ export default class OtherCostPage extends Component{
         return <TouchableOpacity
             style={{padding: 8}}
             onPress={()=>{
-                this.props.navigation.navigate('AddOilRecord');
+                this.props.navigation.navigate('AddOtherRecord');
             }}>
             <Image
                 style={{width:25, height: 25}}
@@ -116,7 +116,7 @@ export default class OtherCostPage extends Component{
         return(
             <View style={{backgroundColor:'#FFFFFF'}}>
                 <NavigationBar
-                    title = '油耗记录'
+                    title = '花费记录'
                     style={styles.NavigationBar}
                     leftButton={this.renderLeftButton(require('../../res/images/ic_check_record.png'))}
                     rightButton={this.renderRightButton(require('../../res/images/ico_add_item.png'))}
@@ -127,22 +127,22 @@ export default class OtherCostPage extends Component{
 
                             <ImageBackground style={styles.bannerImage}
                                              source={require('../../res/images/cost_back.png')}>
-                                <Text style={{fontSize:20,color:'#FFFFFF'}}>最新油耗</Text>
-                                <Text style={{fontSize:10,color:'#FFFFFF',marginTop:5}}>升/百公里</Text>
-                                <Text style={{fontSize:50,color:'#FFFFFF'}}>5.6</Text>
+                                <Text style={{fontSize:20,color:'#FFFFFF'}}>平均花费</Text>
+                                <Text style={{fontSize:10,color:'#FFFFFF',marginTop:5}}>元/月</Text>
+                                <Text style={{fontSize:50,color:'#FFFFFF'}}>3886</Text>
                             </ImageBackground>
 
                             <View style={{marginBottom:20}}>
                                 <View style={styles.showItem}>
-                                    {this.renderSingleItem('累计油耗','5.66','升/百公里')}
-                                    {this.renderSingleItem('平均形式','1200','公里/天')}
-                                    {this.renderSingleItem('加油周期','31','天')}
+                                    {this.renderSingleItem('累计支出','7233','元')}
+                                    {this.renderSingleItem('累计油费','1200','元')}
+                                    {this.renderSingleItem('其他费用','3321','元')}
                                 </View>
 
                                 <View style={styles.showItem}>
-                                    {this.renderSingleItem('累计里程','13333','公里')}
-                                    {this.renderSingleItem('累计加油','5.66','升')}
-                                    {this.renderSingleItem('平均油费','10000','元/月')}
+                                    {this.renderSingleItem('每公里油费','13333','元')}
+                                    {this.renderSingleItem('每公里综合','5.66','元')}
+                                    {this.renderSingleItem('平均每天','100','元')}
                                 </View>
                             </View>
 
