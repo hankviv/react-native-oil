@@ -158,7 +158,7 @@ export default class OilCostPage extends Component{
                             <Echarts option={option} height={300} width={360}  />
                         </View>
 
-                        <View style={{height:Platform.OS == 'ios' ? 0:100}}></View>
+                        <View style={{height:100}}></View>
 
                     </ScrollView>
 

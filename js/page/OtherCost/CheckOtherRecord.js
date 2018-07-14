@@ -99,7 +99,7 @@ export default class CheckOilRecord extends Component{
                                    dataSource={this.state.dataSource}
                                    renderRow={(rowData) => this._showData(rowData)}
                                />
-                               <View style={{height:Platform.OS == 'ios' ? 0:100}}></View>
+                               <View style={{height:100}}></View>
                            </View>
 
                        </ScrollView>

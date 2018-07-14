@@ -126,7 +126,7 @@ export default class CheckOilRecord extends Component{
                                    dataSource={this.state.dataSource}
                                    renderRow={(rowData) => this._showData(rowData)}
                                />
-                               <View style={{height:Platform.OS == 'ios' ? 0:100}}></View>
+                               <View style={{height:100}}></View>
                            </View>
                        </ScrollView>
                         : <Text style={{color:'#E9C6A9',alignSelf:'center',marginTop:80}}>加载中...</Text>
