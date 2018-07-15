@@ -59,7 +59,7 @@ export default class AddOtherRecord extends Component{
 
     _PickerShow(){
         if(Platform.OS === 'ios'){
-            return  <Text onPress={()=>this._IOSPickerShow()}>{this.state.costType}</Text>;
+            return  <Text style={{fontSize:17}} onPress={()=>this._IOSPickerShow()}>{this.state.costType}</Text>;
         }else{
             return  <Picker
                 mode = 'dialog'
@@ -102,7 +102,7 @@ export default class AddOtherRecord extends Component{
 
         let dataPick =
             <View style={styles.item}>
-                <Text style={styles.text}>花费时间</Text>
+                <Text style={[styles.text,{marginBottom:10}]}>花费时间</Text>
                 <DatePicker
                     style={{width: 150}}
                     date={this.state.date}
@@ -142,7 +142,7 @@ export default class AddOtherRecord extends Component{
                     <View style={styles.container}>
 
                         <View style={styles.item}>
-                            <Text style={styles.text}>花费类型</Text>
+                            <Text style={[styles.text,{marginBottom:7}]}>花费类型</Text>
                             {this._PickerShow()}
                         </View>
 
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
     },
     text:{
-        fontSize:12
+        fontSize:12,
     },
     textInput:{
         marginTop:2,
