@@ -202,19 +202,19 @@ export default class AddOilRecord extends Component{
                             >
                                 <View>
                                     <Text style={styles.text}>是否加满</Text>
-                                    <Text style={{fontSize:19,color:'#000000'}}>{this.state.fullOil ? '已加满' : '未加满'}</Text>
+                                    <Text style={{fontSize:16,color:'#242424',marginTop:7}}>{this.state.fullOil ? '已加满' : '未加满'}</Text>
                                 </View>
                             </TouchableHighlight>
                         </View>
 
                         <View style={styles.item}>
-                            <Text style={styles.text}>剩余油量</Text>
+                            <Text style={[styles.text,{marginBottom:7}]}>剩余油量</Text>
                             {this._PickerShow()}
                         </View>
 
                         <View style={styles.item}>
                             <Text style={styles.text}>油箱剩余百分比(%)</Text>
-                            <Text style={{fontSize:21,color:'#000000'}}>{this.state.lastOil}</Text>
+                            <Text style={{fontSize:21,color:'#242424',marginTop:7}}>{this.state.lastOil}</Text>
                         </View>
 
                     </View>
