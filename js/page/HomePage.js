@@ -24,7 +24,7 @@ export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: '花费',
+            selectedTab: '我的',
         }
     }
 

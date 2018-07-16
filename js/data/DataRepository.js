@@ -16,21 +16,6 @@ export default class DataRepository extends Component{
 
     getData(key,callback)
     {
-        // return new Promise((resolve,reject)=>{
-        //     AsyncStorage.getItem(key,(error,result)=>{
-        //         if(!error){
-        //             try {
-        //                 resolve(result);
-        //             }catch (e) {
-        //                 reject(e);
-        //                 console.error(e);
-        //             }
-        //         }else{
-        //             reject(error);
-        //             console.error(error);
-        //         }
-        //     })
-        // })
         AsyncStorage.getItem(key,(error,result)=>{
             if(!error){
                 callback(result);
