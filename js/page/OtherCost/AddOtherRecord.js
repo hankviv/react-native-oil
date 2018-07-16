@@ -12,12 +12,14 @@ import {
     Image,
     Alert,
     Picker,
-    Platform
+    Platform,
+    Keyboard
 } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
 import DataRepository from '../../data/DataRepository'
 import NavigationBar from '../../common/NavigationBar'
+import Toast, {DURATION} from 'react-native-easy-toast'
 
 export default class AddOtherRecord extends Component{
     constructor(props) {
@@ -131,7 +133,7 @@ export default class AddOtherRecord extends Component{
 
 
         return(
-            <View style={{backgroundColor:'#FFFFFF'}}>
+            <View style={{backgroundColor:'#FFFFFF',flex:1}}>
                 <NavigationBar
                     title = '加油'
                     style={styles.NavigationBar}
@@ -183,10 +185,9 @@ export default class AddOtherRecord extends Component{
                             />
                         </View>
 
-
-
                     </View>
                 </ScrollView>
+                <Toast ref="toast"/>
             </View>
 
         );
@@ -194,15 +195,29 @@ export default class AddOtherRecord extends Component{
 
 
     _saveItem(){
+        Keyboard.dismiss();
+        //new DataRepository().deleteData('otherRecord');
+
+        if(!this.state.mileage){
+            return this.refs.toast.show('请填写最新里程');
+        }
+
+        if(!this.state.money){
+            return this.refs.toast.show('费用不能为空');
+        }
+
         let key = 'otherRecord';
         let handle = new DataRepository();
         handle.getData(key,(value)=>{
             if(!value || typeof(value) == 'undefined' ){
-                this.setState({localData : [] });
+                this.setState({localData : {'data':[],'updateTime':new Date().getTime()} });
             }else {
                 this.setState({localData : JSON.parse(value)});
+                alert(value);
             }
+
             let item = {
+                id : new Date().getTime(),
                 costType:this.state.costType,
                 date:this.state.date,
                 mileage:this.state.mileage,
@@ -210,12 +225,12 @@ export default class AddOtherRecord extends Component{
                 remark:this.state.remark,
             };
             localData = this.state.localData;
-            localData.push(item);
+            localData.updateTime = new Date().getTime();
+            localData.data.push(item);
             handle.saveData(key,JSON.stringify(localData));
             this.props.navigation.goBack();
         });
     }
-
 }
 
 const styles = StyleSheet.create({

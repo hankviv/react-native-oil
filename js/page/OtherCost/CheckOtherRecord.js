@@ -45,8 +45,10 @@ export default class CheckOilRecord extends Component{
     _loadData()
     {
         Handle.getData('otherRecord',(result)=>{
-            if(result){
-                this.setState({dataSource: ds.cloneWithRows(JSON.parse(result)),'dataShow':true});
+            res = JSON.parse(result)
+            if(res){
+                if(res.data)
+                this.setState({dataSource: ds.cloneWithRows(res.data),'dataShow':true});
             }
         })
     }
@@ -85,7 +87,7 @@ export default class CheckOilRecord extends Component{
 
     render() {
         return (
-            <View>
+            <View style={{backgroundColor:'#FFF',flex:1}}>
                 <NavigationBar
                     title = '花费记录'
                     style={styles.NavigationBar}
@@ -103,7 +105,7 @@ export default class CheckOilRecord extends Component{
                            </View>
 
                        </ScrollView>
-                        : <Text style={{color:'#E9C6A9',alignSelf:'center',marginTop:80}}>加载中...</Text>
+                        : <Text style={{color:'#E9C6A9',alignSelf:'center',marginTop:40}}>加载中...</Text>
                 }
 
 
