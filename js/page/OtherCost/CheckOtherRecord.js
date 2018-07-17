@@ -10,6 +10,7 @@ import {
     Image,
     ScrollView,
     Platform,
+    DeviceEventEmitter,
 } from 'react-native';
 
 import DataRepository from '../../data/DataRepository'
@@ -27,6 +28,17 @@ export default class CheckOilRecord extends Component{
         this._loadData();
     }
 
+
+    componentDidMount() {
+        this.sub = DeviceEventEmitter.addListener('changeOtherData',(events)=>{
+            this._loadData();
+        });
+    }
+
+    componentWillUnmount() {
+        this.sub.remove();
+    }
+
     renderLeftButton(image){
         return <TouchableOpacity
             style={{padding: 8}}
@@ -41,44 +53,48 @@ export default class CheckOilRecord extends Component{
 
 
 
-
     _loadData()
     {
         Handle.getData('otherRecord',(result)=>{
             res = JSON.parse(result)
             if(res){
-                if(res.data)
-                this.setState({dataSource: ds.cloneWithRows(res.data),'dataShow':true});
+                if(res.data.length !== 0){
+                   this.setState({dataSource: ds.cloneWithRows(res.data),'dataShow':true});
+                }
             }
         })
     }
 
+    _clickItem(value){
+        this.props.navigation.navigate('AddOtherRecord',{ id :value.id, costType:value.costType, date:value.date, mileage:value.mileage, money:value.money, remark:value.remark,})
+    }
 
     _showData(rowData){
         return (
             <View style={styles.container}>
+                <TouchableOpacity onPress={ ()=>{this._clickItem(rowData)}}>
+                    <View style={styles.item}>
 
-                <View style={styles.item}>
-
-                    <Text style={styles.text}>加油日期</Text>
-                    <Text style={[styles.showText,{fontSize:15}]}>{rowData.date}</Text>
+                        <Text style={styles.text}>加油日期</Text>
+                        <Text style={[styles.showText,{fontSize:15}]}>{rowData.date}</Text>
 
 
-                    <View style={styles.typeAndMoney}>
+                        <View style={styles.typeAndMoney}>
 
-                        <View style={{marginRight:50}}>
-                            <Text style={styles.text}>花费类型</Text>
-                            <Text style={[styles.showText,{marginTop:3}]}>{rowData.costType}</Text>
-                        </View>
+                            <View style={{marginRight:50}}>
+                                <Text style={styles.text}>花费类型</Text>
+                                <Text style={[styles.showText,{marginTop:3}]}>{rowData.costType}</Text>
+                            </View>
 
-                        <View>
-                            <Text style={styles.text}>花费金额(元)</Text>
-                            <Text style={[styles.showText,{marginTop:3}]}>{rowData.money}</Text>
+                            <View>
+                                <Text style={styles.text}>花费金额(元)</Text>
+                                <Text style={[styles.showText,{marginTop:3}]}>{rowData.money}</Text>
+                            </View>
+
                         </View>
 
                     </View>
-
-                </View>
+                </TouchableOpacity>
 
             </View>
         )

@@ -13,7 +13,8 @@ import {
     Alert,
     Picker,
     Platform,
-    Keyboard
+    Keyboard,
+    DeviceEventEmitter,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
@@ -24,12 +25,14 @@ import Toast, {DURATION} from 'react-native-easy-toast'
 export default class AddOtherRecord extends Component{
     constructor(props) {
         super(props);
+        navigations = this.props.navigation;
         this.state = {
-            costType:'保养',
-            mileage:'',
-            money:'',
-            date:moment().format('YYYY-MM-DD'),
-            remark:'',
+            id:navigations.getParam('id',0),
+            costType:navigations.getParam('costType', '保养'),
+            mileage:navigations.getParam('mileage', ''),
+            money:navigations.getParam('money', ''),
+            date:navigations.getParam('date', moment().format('YYYY-MM-DD')),
+            remark:navigations.getParam('remark', ''),
         }
     }
 
@@ -208,28 +211,70 @@ export default class AddOtherRecord extends Component{
 
         let key = 'otherRecord';
         let handle = new DataRepository();
-        handle.getData(key,(value)=>{
-            if(!value || typeof(value) == 'undefined' ){
-                this.setState({localData : {'data':[],'updateTime':new Date().getTime()} });
-            }else {
-                this.setState({localData : JSON.parse(value)});
-                alert(value);
-            }
 
-            let item = {
-                id : new Date().getTime(),
-                costType:this.state.costType,
-                date:this.state.date,
-                mileage:this.state.mileage,
-                money:this.state.money,
-                remark:this.state.remark,
-            };
-            localData = this.state.localData;
-            localData.updateTime = new Date().getTime();
-            localData.data.push(item);
-            handle.saveData(key,JSON.stringify(localData));
-            this.props.navigation.goBack();
-        });
+        if(this.state.id == 0){
+            handle.getData(key,(value)=>{
+                if(!value || typeof(value) == 'undefined' ){
+                    this.setState({localData : {'data':[],'updateTime':new Date().getTime()} });
+                }else {
+                    this.setState({localData : JSON.parse(value)});
+                }
+
+                let item = {
+                    id : new Date().getTime(),
+                    costType:this.state.costType,
+                    date:this.state.date,
+                    mileage:this.state.mileage,
+                    money:this.state.money,
+                    remark:this.state.remark,
+                };
+                localData = this.state.localData;
+                localData.updateTime = new Date().getTime();
+                localData.data.push(item);
+                handle.saveData(key,JSON.stringify(localData));
+                DeviceEventEmitter.emit('changeOtherData');
+                this.props.navigation.goBack();
+            });
+        }else{
+            handle.getData(key,(value)=>{
+                if(!value || typeof(value) == 'undefined' ){
+                    this.setState({localData : {'data':[],'updateTime':new Date().getTime()} });
+                }else {
+                    this.setState({localData : JSON.parse(value)});
+                }
+
+                let item = {
+                    id : this.state.id,
+                    costType:this.state.costType,
+                    date:this.state.date,
+                    mileage:this.state.mileage,
+                    money:this.state.money,
+                    remark:this.state.remark,
+                };
+
+                localData = this.state.localData;
+                let arr = [];
+                if(localData.data){
+                  localData.data.forEach((value,index)=>{
+                      if(value.id == this.state.id){
+                          value.costType = this.state.costType;
+                          value.date = this.state.date;
+                          value.mileage = this.state.mileage;
+                          value.money = this.state.money;
+                          value.remark = this.state.remark;
+                      }
+                  })
+                }
+
+
+                localData.updateTime = new Date().getTime();
+                //alert(JSON.stringify(localData));
+                handle.saveData(key,JSON.stringify(localData));
+                DeviceEventEmitter.emit('changeOtherData');
+                this.props.navigation.navigate('CheckOtherRecord');
+            });
+        }
+
     }
 }
 

@@ -23,6 +23,30 @@ export default class OtherCostPage extends Component{
             text2Color:'#000000',
             text3Color:'#000000',
         }
+        this._loadData();
+    }
+
+    componentDidMount() {
+        this.sub = DeviceEventEmitter.addListener('changeOtherData',(events)=>{
+            this._loadData();
+        });
+    }
+
+    _loadData()
+    {
+        Handle.getData('otherRecord',(result)=>{
+            res = JSON.parse(result)
+            if(res){
+                if(res.data.length !== 0){
+                   for(value of res.data)
+                   {
+
+
+
+                   }
+                }
+            }
+        })
     }
 
 
@@ -129,20 +153,20 @@ export default class OtherCostPage extends Component{
                                              source={require('../../res/images/cost_back.png')}>
                                 <Text style={{fontSize:20,color:'#FFFFFF'}}>平均花费</Text>
                                 <Text style={{fontSize:10,color:'#FFFFFF',marginTop:5}}>元/月</Text>
-                                <Text style={{fontSize:50,color:'#FFFFFF'}}>3886</Text>
+                                <Text style={{fontSize:50,color:'#FFFFFF'}}>{this.state.averageCost}</Text>
                             </ImageBackground>
 
                             <View style={{marginBottom:20}}>
                                 <View style={styles.showItem}>
-                                    {this.renderSingleItem('累计支出','7233','元')}
-                                    {this.renderSingleItem('累计油费','1200','元')}
-                                    {this.renderSingleItem('其他费用','3321','元')}
+                                    {this.renderSingleItem('累计支出',this.state.countCost,'元')}
+                                    {this.renderSingleItem('累计油费',this.state.countOilCost,'元')}
+                                    {this.renderSingleItem('其他费用',this.state.countOtherCost,'元')}
                                 </View>
 
                                 <View style={styles.showItem}>
-                                    {this.renderSingleItem('每公里油费','13333','元')}
-                                    {this.renderSingleItem('每公里综合','5.66','元')}
-                                    {this.renderSingleItem('平均每天','100','元')}
+                                    {this.renderSingleItem('每公里油费',this.state.averageOilCost,'元')}
+                                    {this.renderSingleItem('每公里综合',this.state.MileAverageAllMoney,'元')}
+                                    {this.renderSingleItem('平均每天',this.state.everyAverageCostMoney,'元')}
                                 </View>
                             </View>
 
