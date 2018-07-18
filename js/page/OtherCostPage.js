@@ -8,20 +8,30 @@ import {
     Image,
     ScrollView,
     ImageBackground,
-    Platform
+    Platform,
+    DeviceEventEmitter
 } from 'react-native';
 import NavigationBar from '../common/NavigationBar';
 import Echarts from 'native-echarts';
+import DataRepository from '../data/DataRepository';
 
 export default class OtherCostPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            echartXData:['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            echartYData:[820, 932, 901, 934, 1290, 1330, 1320],
+            echartXData:[],
+            echartYData:[],
+            Handle:new DataRepository(),
             text1Color:'#FFD700',
             text2Color:'#000000',
             text3Color:'#000000',
+            countCost:0,
+            countOilCost:0,
+            countOtherCost:0,
+
+            averageOilCost:0,
+            MileAverageAllMoney:0,
+            everyAverageCostMoney:0,
         }
         this._loadData();
     }
@@ -34,15 +44,13 @@ export default class OtherCostPage extends Component{
 
     _loadData()
     {
-        Handle.getData('otherRecord',(result)=>{
+        this.state.Handle.getData('otherRecord',(result)=>{
             res = JSON.parse(result)
             if(res){
                 if(res.data.length !== 0){
                    for(value of res.data)
                    {
-
-
-
+                        alert(JSON.stringify(value));
                    }
                 }
             }
@@ -149,7 +157,7 @@ export default class OtherCostPage extends Component{
                     <ScrollView>
                         <View>
 
-                            <ImageBackground style={styles.bannerImage}
+                            <ImageBackground style={styles.bannerImage} imageStyle={{borderRadius: 15}}
                                              source={require('../../res/images/cost_back.png')}>
                                 <Text style={{fontSize:20,color:'#FFFFFF'}}>平均花费</Text>
                                 <Text style={{fontSize:10,color:'#FFFFFF',marginTop:5}}>元/月</Text>
@@ -209,9 +217,6 @@ const styles = StyleSheet.create({
         marginTop:30,
         height:160,
         width:340,
-        borderRadius:10,
-        borderWidth:8,
-        borderColor:'#8C6DEC',
         alignItems:'center',
         paddingTop:10,
     },

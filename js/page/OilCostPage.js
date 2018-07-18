@@ -125,7 +125,7 @@ export default class OilCostPage extends Component{
                     <ScrollView>
                         <View>
 
-                            <ImageBackground style={styles.bannerImage}
+                            <ImageBackground style={styles.bannerImage} imageStyle={{borderRadius: 15}}
                                    source={require('../../res/images/cost_back.png')}>
                                 <Text style={{fontSize:20,color:'#FFFFFF'}}>最新油耗</Text>
                                 <Text style={{fontSize:10,color:'#FFFFFF',marginTop:5}}>升/百公里</Text>
@@ -185,9 +185,6 @@ const styles = StyleSheet.create({
         marginTop:30,
         height:160,
         width:340,
-        borderRadius:10,
-        borderWidth:8,
-        borderColor:'#8C6DEC',
         alignItems:'center',
         paddingTop:10,
     },
