@@ -9,7 +9,7 @@ import {
     ScrollView,
     ImageBackground,
     Platform,
-    DeviceEventEmitter
+    DeviceEventEmitter,
 } from 'react-native';
 import NavigationBar from '../common/NavigationBar';
 import Echarts from 'native-echarts';
@@ -48,10 +48,30 @@ export default class OtherCostPage extends Component{
             res = JSON.parse(result)
             if(res){
                 if(res.data.length !== 0){
+
+                    countOtherCost = 0;
+                    dateArray1=[];
+                    dateArray2=[];
                    for(value of res.data)
                    {
-                        alert(JSON.stringify(value));
+                       countOtherCost += parseInt(value.money);
+                       //stirngDate = Date.parse(value.date);
+                       //d = new Date(stirngDate);
+                       //alert(value.date);
+                       d = new Date(value.date);
+                       //alert(d);
+                       date = d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();
+                      // alert(date);
+
+                       dateArray1.push(date);
+                       dateArray2.push(value.date);
                    }
+
+                   this.setState({
+                       countOtherCost :countOtherCost
+                   });
+                   alert(dateArray1);
+                    alert(dateArray2);
                 }
             }
         })
@@ -187,7 +207,7 @@ export default class OtherCostPage extends Component{
                             <Text style={{color:this.state.text3Color}} onPress={()=>this._clickData(3)}>全部</Text>
                         </View>
                         <View style={{paddingLeft:15,paddingRight:15}}>
-                            <Echarts option={option} height={300} width={360}  />
+                            {/*<Echarts option={option} height={300} width={360}  />*/}
                         </View>
 
                         <View style={{height:100}}></View>

@@ -135,7 +135,7 @@ export default class OilCostPage extends Component{
                             <View style={{marginBottom:20}}>
                                  <View style={styles.showItem}>
                                      {this.renderSingleItem('累计油耗','5.66','升/百公里')}
-                                     {this.renderSingleItem('平均形式','1200','公里/天')}
+                                     {this.renderSingleItem('平均行驶','1200','公里/天')}
                                      {this.renderSingleItem('加油周期','31','天')}
                                  </View>
 
