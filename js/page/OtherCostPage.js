@@ -14,6 +14,7 @@ import {
 import NavigationBar from '../common/NavigationBar';
 import Echarts from 'native-echarts';
 import DataRepository from '../data/DataRepository';
+import moment from 'moment';
 
 export default class OtherCostPage extends Component{
     constructor(props) {
@@ -44,36 +45,62 @@ export default class OtherCostPage extends Component{
 
     _loadData()
     {
-        this.state.Handle.getData('otherRecord',(result)=>{
-            res = JSON.parse(result)
-            if(res){
-                if(res.data.length !== 0){
+        this.state.Handle.getData('otherRecord',(otherRecord)=>{
+            this.state.Handle.getData('oilRecord',(oilRecord)=>{
+                otherRecordRes = JSON.parse(otherRecord)
+                oilRecordRes = JSON.parse(oilRecord)
+                if(otherRecordRes && oilRecordRes){
 
                     countOtherCost = 0;
-                    dateArray1=[];
-                    dateArray2=[];
-                   for(value of res.data)
-                   {
-                       countOtherCost += parseInt(value.money);
-                       //stirngDate = Date.parse(value.date);
-                       //d = new Date(stirngDate);
-                       //alert(value.date);
-                       d = new Date(value.date);
-                       //alert(d);
-                       date = d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();
-                      // alert(date);
+                    countOilCost = 0;
+                    oilDateArray=[];
+                    otherDateArray=[];
 
-                       dateArray1.push(date);
-                       dateArray2.push(value.date);
-                   }
+                    if(otherRecordRes.data.length !== 0){
+                        for(value of otherRecordRes.data)
+                        {
+                            countOtherCost += parseInt(value.money);
 
-                   this.setState({
-                       countOtherCost :countOtherCost
-                   });
-                   alert(dateArray1);
-                    alert(dateArray2);
+                            d = new Date(value.date);
+                            date = d.getFullYear()+'-'+(d.getMonth()+1);
+                            otherDateArray.push(date);
+                            otherDateArray.sort();
+                        }
+                    }
+
+                    if(oilRecordRes.data.length !== 0){
+                        for(value of oilRecordRes.data)
+                        {
+                            countOilCost += parseInt(value.money);
+
+                            d = new Date(value.date);
+                            date = d.getFullYear()+'-'+(d.getMonth()+1);
+                            oilDateArray.push(date);
+                            oilDateArray.sort();
+                        }
+                    }
+
+
+                    this.setState({
+                        countCost:countOtherCost+countOilCost,
+                        countOtherCost :countOtherCost,
+                        countOilCost:countOilCost,
+                        oilDateArray:oilDateArray,
+                        otherDateArray:otherDateArray,
+
+                    });
+
+
+
+
+
+
+
+
+
+
                 }
-            }
+            })
         })
     }
 
@@ -123,6 +150,11 @@ export default class OtherCostPage extends Component{
                     text2Color:'#000000',
                     text3Color:'#000000',
                 });
+
+                d1 = moment().add(-1,'months').format("YYYY-MM-DD");
+                d2 = moment().format("YYYY-MM-DD");
+                d3 = moment().add(1,'months').format("YYYY-MM-DD");
+                echartXData = [d1,d2,d3];
                 break;
             case 2:
                 this.setState({
@@ -130,6 +162,13 @@ export default class OtherCostPage extends Component{
                     text2Color:'#FFD700',
                     text3Color:'#000000',
                 });
+                d1 = moment().add(-3,'months').format("YYYY-MM-DD");
+                d2 = moment().add(-2,'months').format("YYYY-MM-DD");
+                d3 = moment().add(-1,'months').format("YYYY-MM-DD");
+                d4 = moment().format("YYYY-MM-DD");
+                d5 = moment().add(1,'months').format("YYYY-MM-DD");
+                d6 = moment().add(2,'months').format("YYYY-MM-DD");
+                echartXData = [d1,d2,d3,d4,d5,d6];
                 break;
             case 3:
                 this.setState({
@@ -137,12 +176,13 @@ export default class OtherCostPage extends Component{
                     text2Color:'#000000',
                     text3Color:'#FFD700',
                 });
+                echartXData = this.state.dataArray;
                 break;
         }
 
 
         this.setState({
-            echartXData:['Mon', 'Tue', 'Wed'],
+            echartXData:echartXData,
             echartYData:[820, 932, 901]
         })
     }
@@ -207,7 +247,7 @@ export default class OtherCostPage extends Component{
                             <Text style={{color:this.state.text3Color}} onPress={()=>this._clickData(3)}>全部</Text>
                         </View>
                         <View style={{paddingLeft:15,paddingRight:15}}>
-                            {/*<Echarts option={option} height={300} width={360}  />*/}
+                            <Echarts option={option} height={300} width={360}  />
                         </View>
 
                         <View style={{height:100}}></View>

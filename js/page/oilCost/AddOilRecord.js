@@ -13,24 +13,30 @@ import {
     Image,
     Platform,
     Alert,
+    Keyboard,
+    DeviceEventEmitter,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
 import DataRepository from '../../data/DataRepository'
 import NavigationBar from '../../common/NavigationBar'
+import Toast, {DURATION} from 'react-native-easy-toast'
+
 
 export default class AddOilRecord extends Component{
     constructor(props) {
         super(props);
+        navigations = this.props.navigation;
         this.state = {
-            lastOil:10,
-            fullOil:true,
-            mileage:'',
-            oilMoney:'',
-            oilPrice:'',
-            oilNum:'',
-            date:moment().format('YYYY-MM-DD HH:mm'),
-            showLastOil:'油灯已亮'
+            id:navigations.getParam('id',0),
+            lastOil:navigations.getParam('lastOil',10),
+            fullOil:navigations.getParam('fullOil',true),
+            mileage:navigations.getParam('mileage',''),
+            oilMoney:navigations.getParam('oilMoney',''),
+            oilPrice:navigations.getParam('oilPrice',''),
+            oilNum:navigations.getParam('oilNum',''),
+            date:navigations.getParam('date',moment().format('YYYY-MM-DD HH:mm')),
+            showLastOil:navigations.getParam('showLastOil','油灯已亮'),
         }
     }
 
@@ -92,7 +98,6 @@ export default class AddOilRecord extends Component{
     }
 
     render(){
-
         let dataPick =
             <View style={styles.item}>
                 <Text style={styles.text}>加油日期</Text>
@@ -219,6 +224,7 @@ export default class AddOilRecord extends Component{
 
                     </View>
                 </ScrollView>
+                <Toast ref="toast"/>
             </View>
 
         );
@@ -226,28 +232,101 @@ export default class AddOilRecord extends Component{
 
 
     _saveItem(){
+
+
+        Keyboard.dismiss();
+
+        new DataRepository().deleteData('oilRecord');
+
+        if(!this.state.mileage){
+            return this.refs.toast.show('请填写最新里程');
+        }
+
+        if(!this.state.oilMoney){
+            return this.refs.toast.show('费用不能为空');
+        }
+
+        if(!this.state.oilPrice){
+            return this.refs.toast.show('单价不能为空');
+        }
+
+        if(!this.state.oilNum){
+            return this.refs.toast.show('油量不能为空');
+        }
+
+
+
         let key = 'oilRecord';
         let handle = new DataRepository();
-        handle.getData(key,(value)=>{
-            if(!value || typeof(value) == 'undefined' ){
-                this.setState({localData : [] });
-            }else {
-                this.setState({localData : JSON.parse(value)});
-            }
-            let item = {
-                lastOil:this.state.lastOil,
-                fullOil:true,
-                mileage:this.state.mileage,
-                oilMoney:this.state.oilMoney,
-                oilPrice:this.state.oilPrice,
-                oilNum:this.state.oilNum,
-                date:this.state.date,
-            };
-            localData = this.state.localData;
-            localData.push(item);
-            handle.saveData(key,JSON.stringify(localData));
-            this.props.navigation.goBack();
-        });
+
+        if(this.state.id == 0){
+            handle.getData(key,(value)=>{
+                if(!value || typeof(value) == 'undefined' ){
+                    this.setState({localData : {'data':[],'updateTime':new Date().getTime()} });
+                }else {
+                    this.setState({localData : JSON.parse(value)});
+                }
+
+                let item = {
+                    id : new Date().getTime(),
+                    oilMoney:this.state.oilMoney,
+                    oilPrice:this.state.oilPrice,
+                    oilNum:this.state.oilNum,
+                    date:this.state.date,
+                    fullOil:this.state.fullOil,
+                    lastOil:this.state.lastOil,
+                    mileage:this.state.mileage,
+                };
+
+                localData = this.state.localData;
+                localData.updateTime = new Date().getTime();
+                localData.data.push(item);
+                handle.saveData(key,JSON.stringify(localData));
+                DeviceEventEmitter.emit('changeOilData');
+                this.props.navigation.goBack();
+            });
+        }else{
+            handle.getData(key,(value)=>{
+                if(!value || typeof(value) == 'undefined' ){
+                    this.setState({localData : {'data':[],'updateTime':new Date().getTime()} });
+                }else {
+                    this.setState({localData : JSON.parse(value)});
+                }
+
+                let item = {
+                    id : this.state.id,
+                    oilMoney:this.state.oilMoney,
+                    oilPrice:this.state.oilPrice,
+                    oilNum:this.state.oilNum,
+                    date:this.state.date,
+                    fullOil:this.state.fullOil,
+                    lastOil:this.state.lastOil,
+                    mileage:this.state.mileage,
+                };
+
+                localData = this.state.localData;
+                let arr = [];
+                if(localData.data){
+                    localData.data.forEach((value,index)=>{
+                        if(value.id == this.state.id){
+                            value.oilMoney = this.state.oilMoney;
+                            value.oilPrice = this.state.oilPrice;
+                            value.oilNum = this.state.oilNum;
+                            value.date = this.state.date;
+                            value.fullOil = this.state.fullOil;
+                            value.lastOil = this.state.lastOil;
+                            value.mileage = this.state.mileage;
+                        }
+                    })
+                }
+
+                localData.updateTime = new Date().getTime();
+                //alert(JSON.stringify(localData));
+                handle.saveData(key,JSON.stringify(localData));
+                DeviceEventEmitter.emit('changeOilData');
+                this.props.navigation.navigate('CheckOilRecord');
+            });
+        }
     }
 
     _changeOilMoney(value){
