@@ -8,22 +8,181 @@ import {
     Image,
     ScrollView,
     ImageBackground,
-    Platform
+    Platform,
+    DeviceEventEmitter
 } from 'react-native';
 import NavigationBar from '../common/NavigationBar';
 import Echarts from 'native-echarts';
+import DataRepository from '../data/DataRepository';
+import moment from 'moment';
 
 export default class OilCostPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            echartXData:['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            echartYData:[820, 932, 901, 934, 1290, 1330, 1320],
+            Handle:new DataRepository(),
+            echartXData:[],
+            echartYData:[],
             text1Color:'#FFD700',
             text2Color:'#000000',
             text3Color:'#000000',
+
+            recentOilCost:0,
+            oilCost:0,
+            averageMile:0,
+            oilDay:0,
+            maxMile:0,
+            countOil:0,
+            mouthOil:0
         }
+
+        this._loadData();
     }
+
+    componentDidMount() {
+        this.sub = DeviceEventEmitter.addListener('changeOtherData',(events)=>{
+            this._loadData();
+        });
+    }
+
+    _loadData()
+    {
+        countOtherCost = 0;
+        countOilCost = 0;
+        oilDateArray=[];
+        otherDateArray=[];
+        otherDateDayArray = [];
+        oilDateDayArray = [];
+        oilMileArray = [];
+        otherMileArray = [];
+        oilCostObject = {};
+        mileObject ={};
+
+        this.state.Handle.getData('otherRecord',(otherRecord)=>{
+            this.state.Handle.getData('oilRecord',(oilRecord)=>{
+                otherRecordRes = JSON.parse(otherRecord)
+                oilRecordRes = JSON.parse(oilRecord)
+                if(otherRecordRes && oilRecordRes){
+
+                    if(otherRecordRes.data.length !== 0){
+                        for(value of otherRecordRes.data)
+                        {
+                            countOtherCost += parseInt(value.money);
+
+                            d = new Date(value.date);
+                            date = d.getFullYear()+'-'+(d.getMonth()+1);
+
+
+                            otherDateArray.push(date);
+                            otherDateDayArray.push(value.date);
+                            otherMileArray.push(value.mileage);
+                            otherDateArray.sort();
+                        }
+                    }
+
+                    if(oilRecordRes.data.length !== 0){
+                        for(value of oilRecordRes.data)
+                        {
+                            countOilCost += parseInt(value.oilMoney);
+                            d = new Date(value.date);
+                            date = d.getFullYear()+'-'+(d.getMonth()+1);
+
+                            if(date in oilCostObject){
+                                oilCostObject[date] += parseInt(value.oilMoney);
+                            }else{
+                                oilCostObject[date] = parseInt(value.oilMoney)
+                            }
+
+                            if(date in mileObject){
+                                mileObject[date] += parseInt(value.mileage)
+                            }else{
+                                mileObject[date] = parseInt(value.mileage)
+                            }
+
+                            oilDateArray.push(date);
+                            oilDateDayArray.push(value.date);
+                            oilMileArray.push(value.mileage);
+                            oilDateArray.sort();
+                        }
+                    }
+
+                    allDataDayArray = oilDateDayArray.concat(otherDateDayArray).sort();
+                    allMileArray = oilMileArray.concat(otherMileArray).sort();
+
+                    startTime = allDataDayArray[0];
+                    endTime = allDataDayArray[allDataDayArray.length-1];
+
+                    days = moment(moment(endTime,'YYYY-MM-DD') - moment(startTime,'YYYY-MM-DD') ).format('D');
+
+                    recentStart = oilDateArray[oilDateArray.length -1];
+                    recentEnd = oilDateArray[oilDateArray.length -1];
+
+
+                    if(Object.getOwnPropertyNames(oilCostObject).length > 1){
+                        recentOilCost = parseInt(oilCostObject[recentEnd]/oilCostObject[recentStart]*100).toFixed(1);
+                    }else{
+                        recentOilCost = 0;
+                    }
+
+
+                    if(allDataDayArray.length > 1){
+                        oilDays = moment(moment(allDataDayArray[allDataDayArray.length-1],'YYYY-MM-DD') - moment(allDataDayArray[allDataDayArray.length-2],'YYYY-MM-DD') ).format('D');
+                    }else{
+                        oilDays = 0;
+                    }
+
+
+                    if(allMileArray.length > 1){
+                        recentMile = allMileArray[allMileArray.length -1] - allMileArray[allMileArray.length - 2];
+                    }else{
+                        recentMile = 0;
+                    }
+
+
+                    mileage = allMileArray[allMileArray.length-1] - allMileArray[0];
+                    countCost = countOtherCost+countOilCost;
+
+
+                    echartXData = [];
+                    echartYData = [];
+                    for(i=-3;i<4;i++){
+                        date =  moment().add(i,'months').format("YYYY-M");
+                        echartXData.push(date);
+                    }
+
+                    for(i in echartXData){
+                        if( echartXData[i] in oilCostObject ){
+                            echartYData.push(oilCostObject[echartXData[i]]);
+                        }else{
+                            echartYData.push(0);
+                        }
+                    }
+
+
+                    this.setState({
+                        countCost:countCost,
+                        countOtherCost :countOtherCost,
+                        countOilCost:countOilCost,
+                        oilDateArray:oilDateArray,
+                        otherDateArray:otherDateArray,
+                        oilCostObject : oilCostObject,
+
+                        recentOilCost:recentOilCost,
+                        oilCost:parseInt(countCost/mileage*100).toFixed(2),
+                        averageMile:parseInt(mileage/days).toFixed(0),
+                        oilDay:days,
+                        maxMile:mileage,
+                        countOil:countOilCost,
+                        mouthOil:parseInt(countOilCost/days*31).toFixed(0),
+
+                        echartXData:echartXData,
+                        echartYData:echartYData
+                    });
+                }
+            })
+        })
+    }
+
 
 
     renderLeftButton(image){
@@ -64,6 +223,9 @@ export default class OilCostPage extends Component{
 
     _clickData(type){
 
+        echartXData = [];
+        echartYData = [];
+
         switch (type){
             case 1:
                 this.setState({
@@ -71,6 +233,17 @@ export default class OilCostPage extends Component{
                     text2Color:'#000000',
                     text3Color:'#000000',
                 });
+                for(i=-3;i<4;i++){
+                    date =  moment().add(i,'months').format("YYYY-M");
+                    echartXData.push(date);
+                }
+                for(i in echartXData){
+                    if( echartXData[i] in oilCostObject ){
+                        echartYData.push(oilCostObject[echartXData[i]]);
+                    }else{
+                        echartYData.push(0);
+                    }
+                }
                 break;
             case 2:
                 this.setState({
@@ -78,6 +251,20 @@ export default class OilCostPage extends Component{
                     text2Color:'#FFD700',
                     text3Color:'#000000',
                 });
+
+
+                for(i=-6;i<7;i++){
+                    date =  moment().add(i,'months').format("YYYY-M");
+                    echartXData.push(date);
+                }
+
+                for(i in echartXData){
+                    if( echartXData[i] in oilCostObject ){
+                        echartYData.push(oilCostObject[echartXData[i]]);
+                    }else{
+                        echartYData.push(0);
+                    }
+                }
                 break;
             case 3:
                 this.setState({
@@ -85,14 +272,22 @@ export default class OilCostPage extends Component{
                     text2Color:'#000000',
                     text3Color:'#FFD700',
                 });
+                for(i in oilCostObject){
+                    echartXData.push(i);
+                }
+                echartXData = echartXData.sort();
+                for(i in echartXData){
+                    echartYData.push(oilCostObject[echartXData[i]]);
+                }
                 break;
         }
-
+        //alert(echartXData);
+        //alert(echartYData);
 
         this.setState({
-            echartXData:['Mon', 'Tue', 'Wed'],
-            echartYData:[820, 932, 901]
-        })
+            echartXData:echartXData,
+            echartYData:echartYData,
+        });
     }
 
     render(){
@@ -129,20 +324,20 @@ export default class OilCostPage extends Component{
                                    source={require('../../res/images/cost_back.png')}>
                                 <Text style={{fontSize:20,color:'#FFFFFF'}}>最新油耗</Text>
                                 <Text style={{fontSize:10,color:'#FFFFFF',marginTop:5}}>升/百公里</Text>
-                                <Text style={{fontSize:50,color:'#FFFFFF'}}>5.6</Text>
+                                <Text style={{fontSize:50,color:'#FFFFFF'}}>{this.state.recentOilCost}</Text>
                             </ImageBackground>
 
                             <View style={{marginBottom:20}}>
                                  <View style={styles.showItem}>
-                                     {this.renderSingleItem('累计油耗','5.66','升/百公里')}
-                                     {this.renderSingleItem('平均行驶','1200','公里/天')}
-                                     {this.renderSingleItem('加油周期','31','天')}
+                                     {this.renderSingleItem('累计油耗',this.state.oilCost,'升/百公里')}
+                                     {this.renderSingleItem('平均行驶',this.state.averageMile,'公里/天')}
+                                     {this.renderSingleItem('加油周期',this.state.oilDay,'天')}
                                  </View>
 
                                 <View style={styles.showItem}>
-                                    {this.renderSingleItem('累计里程','13333','公里')}
-                                    {this.renderSingleItem('累计加油','5.66','升')}
-                                    {this.renderSingleItem('平均油费','10000','元/月')}
+                                    {this.renderSingleItem('累计里程',this.state.maxMile,'公里')}
+                                    {this.renderSingleItem('累计加油',this.state.countOil,'升')}
+                                    {this.renderSingleItem('平均油费',this.state.mouthOil,'元/月')}
                                 </View>
                             </View>
 
@@ -167,8 +362,6 @@ export default class OilCostPage extends Component{
             </View>
         );
     }
-
-
 }
 
 const styles = StyleSheet.create({

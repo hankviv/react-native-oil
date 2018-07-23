@@ -10,6 +10,7 @@ import {
     Image,
     ScrollView,
     Platform,
+    DeviceEventEmitter,
 } from 'react-native';
 
 import DataRepository from '../../data/DataRepository'
@@ -26,6 +27,18 @@ export default class CheckOilRecord extends Component{
         }
         this._loadData();
     }
+
+
+    componentDidMount() {
+        this.sub = DeviceEventEmitter.addListener('changeOilData',(events)=>{
+            this._loadData();
+        });
+    }
+
+    componentWillUnmount() {
+        this.sub.remove();
+    }
+
 
     renderLeftButton(image){
         return <TouchableOpacity
@@ -65,46 +78,66 @@ export default class CheckOilRecord extends Component{
     _loadData()
     {
         Handle.getData('oilRecord',(result)=>{
-            if(result){
-                this.setState({dataSource: ds.cloneWithRows(JSON.parse(result)),'dataShow':true});
+            res = JSON.parse(result)
+            if(res){
+                if(res.data.length !== 0){
+                    this.setState({dataSource: ds.cloneWithRows(res.data),'dataShow':true});
+                }
             }
         })
     }
 
+    _clickItem(value){
+        this.props.navigation.navigate('AddOilRecord',{
+            id :value.id,
+            lastOil:value.lastOil,
+            fullOil:value.fullOil,
+            mileage:value.mileage,
+            oilMoney:value.oilMoney,
+            oilPrice:value.oilPrice,
+            oilNum:value.oilNum,
+            date:value.date,
+            showLastOil:value.showLastOil,
+        })
+    }
 
     _showData(rowData){
         return (
             <View style={styles.container}>
-                <View style={styles.item}>
 
-                    <Text style={styles.text}>加油日期</Text>
-                    <Text style={[styles.showText,{fontSize:15}]}>{rowData.date}</Text>
+                <TouchableOpacity onPress={ ()=>{this._clickItem(rowData)}}>
+
+                    <View style={styles.item}>
+
+                        <Text style={styles.text}>加油日期</Text>
+                        <Text style={[styles.showText,{fontSize:15}]}>{rowData.date}</Text>
 
 
-                    <View style={styles.MoneyAndMile}>
+                        <View style={styles.MoneyAndMile}>
 
-                        <View style={{marginRight:50}}>
-                            <Text style={styles.text}>加油金额(元)</Text>
-                            <Text style={[styles.showText,{marginLeft:10,marginTop:3}]}>{rowData.oilMoney}</Text>
+                            <View style={{marginRight:50}}>
+                                <Text style={styles.text}>加油金额(元)</Text>
+                                <Text style={[styles.showText,{marginLeft:10,marginTop:3}]}>{rowData.oilMoney}</Text>
+                            </View>
+
+                            <View>
+                                <Text style={styles.text}>行驶里程(公里)</Text>
+                                <Text style={[styles.showText,{marginLeft:10,marginTop:3}]}>{rowData.mileage}</Text>
+                            </View>
+
                         </View>
 
-                        <View>
-                            <Text style={styles.text}>行驶里程(公里)</Text>
-                            <Text style={[styles.showText,{marginLeft:10,marginTop:3}]}>{rowData.mileage}</Text>
+                        <View style={styles.PriceAndNum}>
+                            <Text>单价:{rowData.oilPrice}/升</Text>
+                            <Text style={{marginLeft:15}}>加油量:{rowData.oilNum}升</Text>
                         </View>
 
+                        <View style={styles.LastAndFull}>
+                            <Text style={{height:20,width:60,color:'#FD8B59', backgroundColor:'#FFF5F1',borderRadius:10,textAlign:'center'}}>{rowData.fullOil ? '加满':'未加满'}</Text>
+                            {this._showLastOil(rowData.lastOil)}
+                        </View>
                     </View>
-
-                    <View style={styles.PriceAndNum}>
-                        <Text>单价:{rowData.oilPrice}/升</Text>
-                        <Text style={{marginLeft:15}}>加油量:{rowData.oilNum}升</Text>
-                    </View>
-
-                    <View style={styles.LastAndFull}>
-                        <Text style={{height:20,width:60,color:'#FD8B59', backgroundColor:'#FFF5F1',borderRadius:10,textAlign:'center'}}>{rowData.fullOil ? '加满':'未加满'}</Text>
-                        {this._showLastOil(rowData.lastOil)}
-                    </View>
-                </View>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -112,7 +145,7 @@ export default class CheckOilRecord extends Component{
 
     render() {
         return (
-            <View style={{backgroundColor:'#FFFFFF'}}>
+            <View style={{backgroundColor:'#FFF',flex:1}}>
                 <NavigationBar
                     title = '油耗记录'
                     style={styles.NavigationBar}

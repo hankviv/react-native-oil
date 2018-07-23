@@ -26,6 +26,7 @@ export default class OtherCostPage extends Component{
             text1Color:'#FFD700',
             text2Color:'#000000',
             text3Color:'#000000',
+            averageCost:0,
             countCost:0,
             countOilCost:0,
             countOtherCost:0,
@@ -45,16 +46,21 @@ export default class OtherCostPage extends Component{
 
     _loadData()
     {
+        countOtherCost = 0;
+        countOilCost = 0;
+        oilDateArray=[];
+        otherDateArray=[];
+        otherDateDayArray = [];
+        oilDateDayArray = [];
+        oilMileArray = [];
+        otherMileArray = [];
+        costObject = {};
+
         this.state.Handle.getData('otherRecord',(otherRecord)=>{
             this.state.Handle.getData('oilRecord',(oilRecord)=>{
                 otherRecordRes = JSON.parse(otherRecord)
                 oilRecordRes = JSON.parse(oilRecord)
                 if(otherRecordRes && oilRecordRes){
-
-                    countOtherCost = 0;
-                    countOilCost = 0;
-                    oilDateArray=[];
-                    otherDateArray=[];
 
                     if(otherRecordRes.data.length !== 0){
                         for(value of otherRecordRes.data)
@@ -63,42 +69,77 @@ export default class OtherCostPage extends Component{
 
                             d = new Date(value.date);
                             date = d.getFullYear()+'-'+(d.getMonth()+1);
+
+
                             otherDateArray.push(date);
+                            otherDateDayArray.push(value.date);
+                            otherMileArray.push(value.mileage);
                             otherDateArray.sort();
+
+                            if(date in costObject){
+                                costObject[date] += parseInt(value.money);
+                            }else{
+                                costObject[date] = parseInt(value.money)
+                            }
                         }
                     }
 
                     if(oilRecordRes.data.length !== 0){
                         for(value of oilRecordRes.data)
                         {
-                            countOilCost += parseInt(value.money);
-
+                            countOilCost += parseInt(value.oilMoney);
                             d = new Date(value.date);
                             date = d.getFullYear()+'-'+(d.getMonth()+1);
+
                             oilDateArray.push(date);
+                            oilDateDayArray.push(value.date);
+                            oilMileArray.push(value.mileage);
                             oilDateArray.sort();
                         }
                     }
 
 
+                    allDataDayArray = oilDateDayArray.concat(otherDateDayArray).sort();
+                    allMileArray = oilMileArray.concat(otherMileArray).sort();
+
+                    startTime = allDataDayArray[0];
+                    endTime = allDataDayArray[allDataDayArray.length-1];
+
+                    days = moment(moment(endTime,'YYYY-MM-DD') - moment(startTime,'YYYY-MM-DD') ).format('D');
+                    mileage = allMileArray[allMileArray.length-1] - allMileArray[0];
+                    countCost = countOtherCost+countOilCost;
+
+
+                    echartXData = [];
+                    echartYData = [];
+                    for(i=-3;i<4;i++){
+                        date =  moment().add(i,'months').format("YYYY-M");
+                        echartXData.push(date);
+                    }
+
+                    for(i in echartXData){
+                        if( echartXData[i] in costObject ){
+                            echartYData.push(costObject[echartXData[i]]);
+                        }else{
+                            echartYData.push(0);
+                        }
+                    }
+
                     this.setState({
-                        countCost:countOtherCost+countOilCost,
+                        countCost:countCost,
                         countOtherCost :countOtherCost,
                         countOilCost:countOilCost,
                         oilDateArray:oilDateArray,
                         otherDateArray:otherDateArray,
 
+                        averageOilCost:parseInt(countCost/mileage).toFixed(2),
+                        MileAverageAllMoney:parseInt(countCost/mileage).toFixed(2),
+                        everyAverageCostMoney:parseInt(countCost/days).toFixed(2),
+                        averageCost:parseInt(countCost/days/31).toFixed(2),
+
+                        echartXData:echartXData,
+                        echartYData:echartYData
                     });
-
-
-
-
-
-
-
-
-
-
                 }
             })
         })
@@ -142,7 +183,8 @@ export default class OtherCostPage extends Component{
     }
 
     _clickData(type){
-
+        echartXData = [];
+        echartYData = [];
         switch (type){
             case 1:
                 this.setState({
@@ -151,10 +193,17 @@ export default class OtherCostPage extends Component{
                     text3Color:'#000000',
                 });
 
-                d1 = moment().add(-1,'months').format("YYYY-MM-DD");
-                d2 = moment().format("YYYY-MM-DD");
-                d3 = moment().add(1,'months').format("YYYY-MM-DD");
-                echartXData = [d1,d2,d3];
+                for(i=-3;i<4;i++){
+                    date =  moment().add(i,'months').format("YYYY-M");
+                    echartXData.push(date);
+                }
+                for(i in echartXData){
+                    if( echartXData[i] in oilCostObject ){
+                        echartYData.push(oilCostObject[echartXData[i]]);
+                    }else{
+                        echartYData.push(0);
+                    }
+                }
                 break;
             case 2:
                 this.setState({
@@ -162,13 +211,19 @@ export default class OtherCostPage extends Component{
                     text2Color:'#FFD700',
                     text3Color:'#000000',
                 });
-                d1 = moment().add(-3,'months').format("YYYY-MM-DD");
-                d2 = moment().add(-2,'months').format("YYYY-MM-DD");
-                d3 = moment().add(-1,'months').format("YYYY-MM-DD");
-                d4 = moment().format("YYYY-MM-DD");
-                d5 = moment().add(1,'months').format("YYYY-MM-DD");
-                d6 = moment().add(2,'months').format("YYYY-MM-DD");
-                echartXData = [d1,d2,d3,d4,d5,d6];
+
+                for(i=-6;i<7;i++){
+                    date =  moment().add(i,'months').format("YYYY-M");
+                    echartXData.push(date);
+                }
+
+                for(i in echartXData){
+                    if( echartXData[i] in oilCostObject ){
+                        echartYData.push(oilCostObject[echartXData[i]]);
+                    }else{
+                        echartYData.push(0);
+                    }
+                }
                 break;
             case 3:
                 this.setState({
@@ -176,14 +231,23 @@ export default class OtherCostPage extends Component{
                     text2Color:'#000000',
                     text3Color:'#FFD700',
                 });
-                echartXData = this.state.dataArray;
+                echartXData = [];
+                for(i in oilCostObject){
+                    echartXData.push(i);
+                }
+
+                echartXData.sort((a,b)=>{
+                    return moment(b,'YYYY-m') - moment(a,'YYYY-M');
+                });
+                for(i in echartXData){
+                    echartYData.push(oilCostObject[echartXData[i]]);
+                }
                 break;
         }
-
-
+        //alert(echartXData);
         this.setState({
             echartXData:echartXData,
-            echartYData:[820, 932, 901]
+            echartYData:echartYData
         })
     }
 

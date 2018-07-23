@@ -35,7 +35,7 @@ export default class AddOilRecord extends Component{
             oilMoney:navigations.getParam('oilMoney',''),
             oilPrice:navigations.getParam('oilPrice',''),
             oilNum:navigations.getParam('oilNum',''),
-            date:navigations.getParam('date',moment().format('YYYY-MM-DD HH:mm')),
+            date:navigations.getParam('date',moment().format('YYYY-MM-DD')),
             showLastOil:navigations.getParam('showLastOil','油灯已亮'),
         }
     }
@@ -102,11 +102,12 @@ export default class AddOilRecord extends Component{
             <View style={styles.item}>
                 <Text style={styles.text}>加油日期</Text>
                 <DatePicker
-                    style={{width: 210}}
+                    style={{width: 250,borderColor:'#FFF'}}
                     date={this.state.date}
-                    mode="datetime"
+                    mode="date"
+                    showIcon={false}
                     placeholder="select date"
-                    format="YYYY-MM-DD HH:mm"
+                    format="YYYY-MM-DD"
                     confirmBtnText="确定"
                     cancelBtnText="取消"
                     minDate="2001-01-01"
@@ -114,14 +115,19 @@ export default class AddOilRecord extends Component{
                     androidMode="spinner"
                     customStyles={{
                         dateIcon: {
-                            position: 'absolute',
-                            left: 0,
-                            top: 4,
-                            marginLeft: 0
+                            position: 'relative',
+                            width:30,
+
                         },
                         dateInput: {
-                            marginLeft: 50
-                        }
+                            borderColor:'#fff',
+                            marginRight:150,
+                        },
+                       dateText:{
+                            fontSize:18,
+                            color:'#000',
+                            fontWeight:'500'
+                       }
                     }}
                     onDateChange={(date) => {this.setState({date: date})}}
                 />
@@ -232,11 +238,7 @@ export default class AddOilRecord extends Component{
 
 
     _saveItem(){
-
-
         Keyboard.dismiss();
-
-        new DataRepository().deleteData('oilRecord');
 
         if(!this.state.mileage){
             return this.refs.toast.show('请填写最新里程');
@@ -258,7 +260,7 @@ export default class AddOilRecord extends Component{
 
         let key = 'oilRecord';
         let handle = new DataRepository();
-
+        //handle.deleteData('oilRecord');
         if(this.state.id == 0){
             handle.getData(key,(value)=>{
                 if(!value || typeof(value) == 'undefined' ){

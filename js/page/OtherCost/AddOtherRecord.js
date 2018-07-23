@@ -64,13 +64,13 @@ export default class AddOtherRecord extends Component{
 
     _PickerShow(){
         if(Platform.OS === 'ios'){
-            return  <Text style={{fontSize:17}} onPress={()=>this._IOSPickerShow()}>{this.state.costType}</Text>;
+            return  <Text style={{fontSize:17, fontWeight:'bold'}} onPress={()=>this._IOSPickerShow()}>{this.state.costType}</Text>;
         }else{
             return  <Picker
                 mode = 'dialog'
                 selectedValue={this.state.costType}
                 onValueChange={(costType) => this.setState({costType: costType})}
-                style={{ height: 30, width: 150}}
+                style={{ height: 30, width: 150,}}
                 itemStyle ={{borderColor:'#E5E5E5',borderWidth:1}}
                 prompt={'花费类型'}
             >
@@ -109,9 +109,10 @@ export default class AddOtherRecord extends Component{
             <View style={styles.item}>
                 <Text style={[styles.text,{marginBottom:10}]}>花费时间</Text>
                 <DatePicker
-                    style={{width: 150}}
+                    style={{width: 250}}
                     date={this.state.date}
                     mode="date"
+                    showIcon={false}
                     placeholder="select date"
                     format="YYYY-MM-DD"
                     confirmBtnText="确定"
@@ -121,13 +122,18 @@ export default class AddOtherRecord extends Component{
                     androidMode="spinner"
                     customStyles={{
                         dateIcon: {
-                            position: 'absolute',
-                            left: 0,
-                            top: 4,
-                            marginLeft: 0
+                            position: 'relative',
+                            width:30,
+
                         },
                         dateInput: {
-                            marginLeft: 50
+                            borderColor:'#fff',
+                            marginRight:150,
+                        },
+                        dateText:{
+                            fontSize:18,
+                            color:'#000',
+                            fontWeight:'500',
                         }
                     }}
                     onDateChange={(date) => {this.setState({date: date})}}
@@ -304,6 +310,7 @@ const styles = StyleSheet.create({
     textInput:{
         marginTop:2,
         height: 50,
-        fontSize:20
+        fontSize:20,
+        fontWeight:'400',
     },
 });
