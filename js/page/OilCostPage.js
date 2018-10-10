@@ -83,7 +83,8 @@ export default class OilCostPage extends Component{
                     if(oilRecordRes.data.length !== 0){
                         for(value of oilRecordRes.data)
                         {
-                            countOilCost += parseInt(value.oilMoney);
+                            //累计加油(升)
+                            countOilCost += parseInt(value.oilNum);
                             d = new Date(value.date);
                             date = d.getFullYear()+'-'+(d.getMonth()+1);
 
@@ -112,7 +113,9 @@ export default class OilCostPage extends Component{
                     startTime = allDataDayArray[0];
                     endTime = allDataDayArray[allDataDayArray.length-1];
 
-                    days = moment(moment(endTime,'YYYY-MM-DD') - moment(startTime,'YYYY-MM-DD') ).format('D');
+                    //days = moment(moment(endTime,'YYYY-MM-DD') - moment(startTime,'YYYY-MM-DD') ).format('D');
+
+                    days = moment(endTime,'YYYY-MM-DD').diff(moment(startTime,'YYYY-MM-DD'),'days');
 
                     recentStart = oilDateArray[oilDateArray.length -1];
                     recentEnd = oilDateArray[oilDateArray.length -1];
@@ -139,7 +142,7 @@ export default class OilCostPage extends Component{
                     }
 
 
-                    mileage = allMileArray[allMileArray.length-1] - allMileArray[0];
+                    mileage = allMileArray[allMileArray.length-1];
                     countCost = countOtherCost+countOilCost;
 
 
